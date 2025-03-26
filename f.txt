@@ -1,0 +1,83 @@
+clc; clear;
+lambda = 0.5*10^-6; 
+k = 2*pi/lambda; 
+z = 1250;   
+a = 0.09;  
+b = 0.09;
+
+
+ L = 0.5; 
+ M = 250; 
+ dx = L/M; 
+ x = -L/2:dx:L/2-dx; 
+ y= x;
+ [X , Y] = meshgrid(x,y);
+
+sqr_X = abs(X)<= a/2; 
+sqr_Y = abs(Y)<= b/2; 
+sqr_ap = sqr_X.* sqr_Y; 
+imagesc(sqr_ap) 
+title("Aperture"); 
+colormap hot; 
+
+h = exp(1j*k/(2*z)*(X.^2+Y.^2)); 
+ui = conv2(h,sqrt(sqr_ap)); 
+u_c1 = ui.*conj(ui); 
+imagesc(u_c1); 
+colormap hot; 
+title("Intensity (Convolutional)"); 
+
+c = abs(ui); 
+plot(c(:,250)); 
+title("Line Profile"); 
+
+surf(u_c1); 
+colormap turbo; 
+shading interp; 
+camlight right; 
+axis on; 
+title("3D Profile"); 
+
+
+QPE = exp(1j*k/(2*z)*(X.^2+Y.^2)); 
+U_QPE = sqr_ap.*QPE; 
+ui = (1/1j*lambda*z)*fftshift(fft2(U_QPE)); 
+u_co = ui.*conj(ui); 
+imagesc(u_co); 
+colormap hot; 
+title("Intensity (prdouct of QPhase and Incident Field)");
+
+c = abs(ui); 
+plot(c(:,250)); 
+title("Line Profile");
+
+surf(u_co); 
+colormap turbo; 
+shading interp; 
+camlight right; 
+axis on; 
+title("3D Profile");
+
+
+%method-3
+h = exp(1j*k/(2*z)*(X.^2+Y.^2)); 
+H = fft2(h); 
+gg = fft2(sqr_ap); 
+gi = gg.*H; 
+ui = ifftshift(ifft2(gi)); 
+u_c3 = ui.*conj(ui); 
+imagesc(u_c3); 
+colormap hot; 
+title("Intensity (Transfer function)"); 
+
+
+c = abs(ui); 
+plot(c(:,250)); 
+title("Line Profile"); 
+
+surf(u_c3); 
+colormap turbo; 
+shading interp; 
+camlight right; 
+axis on; 
+title("3D Profile"); 

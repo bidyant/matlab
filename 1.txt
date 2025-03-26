@@ -1,0 +1,95 @@
+%read image
+I = imread("cameraman.tif");
+Id = double(I);
+imagesc(Id);
+title("Grayscale Image");
+axis square;
+colormap gray;
+
+%creating pupil function
+[y,x]=size(Id);
+[X,Y]=meshgrid(-x/2:x/2-1,-y/2:y/2-1);
+r=100;
+x0=10;
+y0=-30;
+cir = sqrt((X-x0).^2+(Y-y0).^2);
+circle = abs(cir)<=r;
+imagesc(circle);
+title("Aperture or Entrance Pupil");
+axis square;
+colormap gray;
+
+
+%creating object
+obj = Id.*circle;
+imagesc(obj);
+axis square;
+colormap gray;
+title("Object");
+
+%takeing fourier transform of object
+Ug = fftshift(fft2(obj));
+imagesc(log(abs(Ug)));
+title("FFT of Object");
+axis square;
+colormap gray;
+
+%geometrical image double fft
+geo_img = fft2(Ug);
+aa = geo_img.*conj(geo_img);
+imagesc(aa);
+axis square;
+colormap gray;
+title ("Geometrical Image");
+
+
+%impulse response/ PSF
+IR = fftshift(fft2(circle));
+imagesc(abs(IR));
+axis square;
+colormap hot;
+title("Coherent impulse response");
+
+%final coherent image
+f_image = conv2(IR,geo_img);
+imagesc(abs(f_image));
+colormap gray;
+axis off;
+title("Image in space domain");
+
+%final incoherent image
+IRI=IR.*conj(IR);
+Ig=geo_img.*conj(geo_img);
+in_img=conv2(IRI,Ig);
+imagesc(abs(in_img));
+colormap gray;
+axis off;
+title("incoherent Image in space domain");
+
+
+
+
+ATF = (fft2(IR));
+imagesc(abs(ATF));
+axis square;
+title("ATF")
+
+Gg = (fft2(geo_img));
+imagesc(abs(Gg));
+axis square;
+title("Geometric image in Frequency domain")
+
+Gi = Gg .* ATF;
+Gi1 =ifftshift(ifft2(Gi));
+imagesc(abs(Gi1));
+colormap gray;
+axis square;
+title("Coherent image in done in frequency domain")
+
+
+OTF=xcorr2(ATF,circle);
+OTF=imresize(OTF,0.5);
+incoherent_image_freq=OTF.*Gg;
+incoherent_image_freq=ifft2(incoherent_image_freq);
+imagesc(abs(incoherent_image_freq));
+title("inCoherent image in done in frequency domain")
