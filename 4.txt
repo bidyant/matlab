@@ -1,0 +1,84 @@
+lambda = 632.8e-9; % Wavelength of light
+d = 1; % Distance from straight edge to screen
+y_max = 0.005; % Maximum value of y
+N = 1000; % Number of points
+y = linspace(-y_max, y_max, N); % Generate N points from -y_max to y_max
+
+v0 = -sqrt(2/(lambda * d)) * y; % Fresnel parameter v0
+
+ 
+C_v0 = arrayfun(@(z) fresnelc(z), v0);
+S_v0 = arrayfun(@(z) fresnels(z), v0);
+
+% Compute the optical field U_P0
+U_P0 = ((1 - 1i) / 2) .* ((0.5 - C_v0) + 1i * (0.5 - S_v0));
+
+% Compute intensity
+I = U_P0 .* conj(U_P0);
+
+% Plot intensity
+figure;
+imagesc(I);
+colormap hot;
+colorbar;
+title("Intensity Pattern by a Straight Edge");
+
+figure;
+plot(I,'B','linewidth',1);
+xlabel('v0');
+ylabel('Normalized Intensity');
+title("Diffraction through a symmertical straight edge");
+grid on;
+axis xy;
+
+function C = fresnelc(v0)
+    C = integral(@(t) cos(pi * t.^2 / 2), 0, v0);
+end
+
+function S = fresnels(v0)
+    S = integral(@(t) sin(pi * t.^2 / 2), 0, v0);
+end
+
+
+=======================
+
+
+lambda = 632.8e-9; % Wavelength of light
+d = 1; % Distance from straight edge to screen
+y_max = 0.01; % Maximum value of y
+N = 1000; % Number of points
+y = linspace(-y_max, y_max, N); % Generate N points from -y_max to y_max
+b = 0.005;
+
+v1 = sqrt(2/(lambda * d)) * (0.5*b);
+v2 = sqrt(2/(lambda * d)) * y;
+v2plusv1 = v2+v1;
+v2minusv1 = v2-v1;
+
+C_v2plusv1 = arrayfun(@(z) fresnelc(z), v2plusv1);
+C_v2minusv1 = arrayfun(@(z) fresnelc(z), v2minusv1);
+S_v2plusv1 = arrayfun(@(z) fresnels(z), v2plusv1);
+S_v2minusv1 = arrayfun(@(z) fresnels(z), v2minusv1);
+
+U_P0 = ((1-1i)/2).*((C_v2plusv1-C_v2minusv1)+1i*(S_v2plusv1-S_v2minusv1))
+I = U_P0.*conj(U_P0);
+imagesc(I);
+colormap hot;
+colorbar;
+title("Intensity Pattern by a long narrow slit");
+
+figure;
+plot(I,'B','linewidth',1);
+xlabel('v0');
+ylabel('Normalized Intensity');
+title("Diffraction through a long narrow slit");
+grid on;
+axis xy;
+
+function C = fresnelc(v0)
+    C = integral(@(t) cos(pi * t.^2 / 2), 0, v0);
+end
+
+function S = fresnels(v0)
+    S = integral(@(t) sin(pi * t.^2 / 2), 0, v0);
+end

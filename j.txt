@@ -1,0 +1,13 @@
+E_H  = [1; 0]              % Horizontal polarization
+E_V  = [0; 1]              % Vertical polarization
+E_D  = 1/sqrt(2)*[1; 1]    % Diagonal polarization
+E_Ad = 1/sqrt(2)*[1; -1]   % Antidiagonal polarization
+E_R  = 1/sqrt(2)*[1; -1i]  % Right circular polarization
+E_L  = 1/sqrt(2)*[1; 1i]   % Left circular polarization
+
+J_HP  = [1 0;0 0]                % Horizontal Polarizer
+J_VP  = [0 0;0 1]                % Vertical Polarizer
+J_DP  = 1/2 *[1 1;1 1]           % Diagonal Polarizer
+J_AdP = 1/2 *[1 -1;-1 1]         % Anti Diagonal Polarizer
+J_QW   = [exp(1i*pi/4) 0;0 exp(-1i*pi/4)]  % quater wave plate
+J_HW   = [exp(1i*pi/2) 0;0 exp(-1i*pi/2)]  % Half wave plate

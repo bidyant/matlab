@@ -1,0 +1,50 @@
+clc;clear;
+% Define Jones vectors for different polarizations 
+E_H  = [1; 0];              % Horizontal polarization 
+E_V  = [0; 1];              % Vertical polarization 
+
+% Define Jones matrices for polarizers 
+J_HP  = [1 0; 0 0];         % Horizontal Polarizer 
+J_VP  = [0 0; 0 1];         % Vertical Polarizer 
+J_HW   = [exp(1i*pi/2) 0;0 exp(-1i*pi/2)];  % Half wave plate 
+J_QW   = [exp(1i*pi/4) 0;0 exp(-1i*pi/4)];  % quater wave plate
+
+% Define the angle range for rotation 
+Angle = 360; 
+A = 0:1:Angle; 
+ 
+% Initialize array to store intensity values 
+I = zeros(size(A)); 
+I1 = zeros(size(A));
+
+% Loop through angles 
+for Theta = 1:Angle 
+ 
+    J_th = [cosd(Theta) sind(Theta); -sind(Theta) cosd(Theta)]; 
+    J_mth = [cosd(-Theta) sind(-Theta); -sind(-Theta) cosd(-Theta)]; 
+ 
+    % Compute total Jones matrix 
+    J1 = J_th * J_QW * J_mth;  % Jones matrix of the optical element rotated hough an angle θ
+    J2 = J_th * J_HW * J_mth;  % Jones matrix of the optical element rotated through an angle θ 
+    J = J_VP*J1; 
+    Jp = J_VP*J2; 
+     
+    % Apply the Jones matrix to horizontal polarization 
+    Jfinal = J * E_H; 
+    Jfinal1 = Jp * E_H; 
+     
+    % Calculate intensity 
+    I(Theta) = abs(Jfinal(1))^2 + abs(Jfinal(2))^2; % Total intensity 
+    I1(Theta) = abs(Jfinal1(1))^2 + abs(Jfinal1(2))^2; % Total intensity 
+     
+end 
+
+% Plot the intensity 
+plot(A, I); 
+xlabel('Angle (degrees)'); 
+ylabel('Intensity'); 
+title('Intensity vs. Angle for QWP between Horizontal and Vertical Polarizers'); 
+plot(A, I1); 
+xlabel('Angle (degrees)'); 
+ylabel('Intensity'); 
+title('Intensity vs. Angle for HWP between Horizontal and Vertical Polarizers');
