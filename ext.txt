@@ -1,0 +1,90 @@
+surf(abs(u)); 
+title("3D Profile"); 
+camlight left; 
+lighting phong 
+colormap turbo; 
+shading interp;
+axis on; 
+-------------------
+frequency=010; 
+amplitude=1; 
+phase = 60; 
+Z = amplitude*(sawtooth((2*3.1415*frequency.*X+phase))); 
+colormap gray; 
+imagesc(Z); 
+title("Saw Tooth Grating"); 
+
+x1 = abs(X)<=0.3; 
+x2=abs(Y)<=(0.3); 
+rect_f = x1.*x2; 
+d=Z.*rect_f; 
+imagesc(abs(d)); 
+colormap gray; 
+title("Aperture"); 
+-----------------------
+sine grating
+
+frequency=50; 
+amplitude=1; 
+Z = amplitude*(1+sin((2*3.1415*frequency*X))); 
+colormap gray; 
+imagesc(Z); 
+title("grating"); 
+
+a1 = abs(X)<=0.2; 
+a2 = abs(Y)<=0.2; 
+rect_f = a1.*a2; 
+d=Z.*rect_f; 
+imagesc((d)); 
+title("aperture product with grating");
+
+-------------
+square grating
+
+frequency=10; 
+amplitude=1; 
+phase = 60; 
+Z = amplitude*(square((2*3.1415*frequency.*X+phase))); 
+colormap gray; 
+imagesc(Z); 
+title("Square Grating"); 
+
+x1 = abs(X)<=0.3; 
+x2=abs(Y)<=0.3; 
+rect_f = x1.*x2; 
+d=Z.*rect_f; 
+imagesc(abs(d)); 
+colormap hot; 
+title("Aperture"); 
+
+---------------------
+ring
+
+% Aperture 
+r2 = 0.2; 
+r1 = 0.18; 
+radius = sqrt(X.^2 + Y.^2); 
+rect_f = (radius <= r2) & (radius >= r1); 
+ 
+% Plot Aperture 
+ 
+imagesc(X(1,:), Y(:,1), rect_f); 
+colormap hot; 
+title("Aperture");
+
+--------------
+square inside square
+
+a = 0.7; 
+b = 0.3; 
+rect_x = abs(X) <= a/2; 
+rect_y = abs(Y) <= a/2; 
+sqr2 = rect_x .* rect_y; 
+sqr1 = abs(X) >= b/2 | abs(Y) >= b/2; 
+rect_f = sqr1 + sqr2; 
+imagesc(X(1,:), Y(:,1), rect_f); 
+axis square; 
+colormap hot; 
+title("Aperture");
+
+-----------------------
